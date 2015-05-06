@@ -94,12 +94,7 @@ For first time, you can do it like this:
 
 ```sh
 browserify-maybe-multi-require $ npm install
-...
-browserify-maybe-multi-require $ cd test
-browserify-maybe-multi-require/test $ bower install
-...
-browserify-maybe-multi-require/test $ cd ..
-browserify-maybe-multi-require$ npm test
+browserify-maybe-multi-require $ npm test
 
 	> browserify-maybe-multi-require@0.0.1 test ~/repos/browserify-maybe-multi-require
 	> mocha --reporter nyan
