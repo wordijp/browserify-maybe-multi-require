@@ -127,10 +127,11 @@ function browserifyMaybeMultiRequire(browserify, options) {
 					if (item.path) browserify.require(item.path, { expose: item.alias });
 					else           browserify.require(item.name, { expose: item.alias });
 				} else if (all_require && !all_external && !_(external_alias).contains(require)) {
-					var is_module = require.match(/^(\.){0,2}\//) ? false : true;
-					if (is_module) {
-						browserify.require(require);
-					}
+					//var is_module = require.match(/^(\.){0,2}\//) ? false : true;
+					//if (is_module) {
+					//	browserify.require(require);
+					//}
+					// no-op (node_modules's require is automatical by browserify)
 				}
 			});
 		}
