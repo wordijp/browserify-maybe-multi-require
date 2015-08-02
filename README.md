@@ -20,8 +20,10 @@ In your task runner like gulp, add this plugin to browserify:
 
 ```
 b.plugin('browserify-maybe-multi-require', {
+	files:  ['xxx.js'],
     require: ['*', './my_modules/mycomp1.js:mycomp1', 'comp2', 'base62/lib/base62'],
-    external: ['comp3', 'comp4']
+    external: ['comp3', 'comp4'],
+	ignore: ['comp5']
 });
 ```
 
@@ -61,14 +63,15 @@ In command line, pls use parameter `--workdir thedir`.
 
 ```
 b.plugin('browserify-maybe-multi-require', {
+	files: ['xxx.js'],
     //       ['name', 'path:alias', 'submodule:alias'],
 	require: ['*', './my_modules/mycomp1.js:mycomp1', 'base62/lib/base62:libbase62'],
-
-    external: ['comp3', 'comp4']
+    external: ['comp3', 'comp4'],
+	ignore: ['comp5']
 });
 ```
 
-**action:** _string_, guide `browserify-maybe-multi-require` to **require**/**external** specified bower and non package components; available values: `require` | `external`.
+**action:** _string_, guide `browserify-maybe-multi-require` to **require**/**external** specified bower and non package components in **files**(**ignore** used to ignore in already configured component)  ; available values: `files` | `require` | `external` | `ignore`.
 
 _Notes: `name_or_path` format: `name_or_path[:alias]`, and name_or_path can be component name, submodule like 'base62/lib/base62' or file path._
 

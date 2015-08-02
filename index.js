@@ -35,10 +35,11 @@ function _getAlias(rawname) {
 //////////////////////////////////////////////////////////////////////////////
 
 function browserifyMaybeMultiRequire(browserify, options) {
-	options.require = options.require || utils.componentNames(_workdir);
+	options.require = options.require || [];
 
-	var files = options.getFiles()
-	var requires = _getRequiresFromFiles(files)
+	var files = (options.files || []).concat((options.getFiles && options.getFiles()) || []);
+	var requires = _getRequiresFromFiles(files);
+	var ignore = options.ignore || [];
 
 	if (options.workdir) _workdir = workdir;
 	if (options.conf) {
@@ -122,6 +123,8 @@ function browserifyMaybeMultiRequire(browserify, options) {
 
 			///
 			requires.forEach(function(require) {
+				if (_(ignore).contains(require)) return;
+
 				var item = workinglist.find(function(x) { return x.alias === require; });
 				if (item) {
 					if (item.path) browserify.require(item.path, { expose: item.alias });
@@ -136,6 +139,8 @@ function browserifyMaybeMultiRequire(browserify, options) {
 		}
 		if (_(['external']).contains(action)) {
 			requires.forEach(function(require) {
+				if (_(ignore).contains(require)) return;
+
 				if (_(external_alias).contains(require)) {
 					browserify.external(require);
 				} else if (all_external && !_(require_alias).contains(require)) {
