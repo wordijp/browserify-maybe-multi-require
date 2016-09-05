@@ -4,6 +4,7 @@ var path = require('path');
 var utils = require('./utils');
 var _  = require('lodash-node');
 var dotAccess = require('dot-access');
+var globule = require('globule');
 
 var _workdir = process.cwd();
 
@@ -43,7 +44,7 @@ function browserifyMaybeMultiRequire(browserify, options) {
 
 	options.require = options.require || [];
 
-	var files = (options.files || []).concat((options.getFiles && options.getFiles()) || []);
+	var files = (options.files && globule.find(options.files) || []).concat((options.getFiles && options.getFiles()) || []);
 	var requires = _getRequiresFromFiles(files);
 	var ignore = options.ignore || [];
 
