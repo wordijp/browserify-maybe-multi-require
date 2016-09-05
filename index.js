@@ -35,17 +35,17 @@ function _getAlias(rawname) {
 //////////////////////////////////////////////////////////////////////////////
 
 function browserifyMaybeMultiRequire(browserify, options) {
-	options.require = options.require || [];
-
-	var files = (options.files || []).concat((options.getFiles && options.getFiles()) || []);
-	var requires = _getRequiresFromFiles(files);
-	var ignore = options.ignore || [];
-
 	if (options.workdir) _workdir = workdir;
 	if (options.conf) {
 		var confjson = require(path.join(_workdir, options.conf));
 		options = options.confnode && dotAccess.get(confjson, options.confnode) || confjson;
 	}
+
+	options.require = options.require || [];
+
+	var files = (options.files || []).concat((options.getFiles && options.getFiles()) || []);
+	var requires = _getRequiresFromFiles(files);
+	var ignore = options.ignore || [];
 
 	var bowers = utils.componentNames(_workdir);
 
