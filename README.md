@@ -67,7 +67,8 @@ b.plugin('browserify-maybe-multi-require', {
     //       ['name', 'path:alias', 'submodule:alias'],
 	require: ['*', './my_modules/mycomp1.js:mycomp1', 'base62/lib/base62:libbase62'],
     external: ['comp3', 'comp4'],
-	ignore: ['comp5']
+	ignore: ['comp5'],
+    // noreset: true, // disable run again when browserify 'reset' event
 });
 ```
 
