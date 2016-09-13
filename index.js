@@ -42,7 +42,16 @@ function browserifyMaybeMultiRequire(browserify, options) {
 		options = options.confnode && dotAccess.get(confjson, options.confnode) || confjson;
 	}
 
-	options.require = options.require || [];
+	// to array
+	options.files = [].concat(options.files).filter(Boolean);
+	var _getFiles = options.getFiles || function() { return [] };
+	options.getFiles = function() {
+		return [].concat(_getFiles()).filter(Boolean);
+	};
+	options.require = [].concat(options.require).filter(Boolean);
+	options.external = [].concat(options.external).filter(Boolean);
+	options.ignore = [].concat(options.ignore).filter(Boolean);
+
 
 	if (!options.noreset) browserify.on('reset', exec);
 	
@@ -76,9 +85,8 @@ function browserifyMaybeMultiRequire(browserify, options) {
 		//   browserify.require('linq');
 		//   browserify.external('underscore');
 
-		var files = (options.files && globule.find(options.files) || []).concat((options.getFiles && options.getFiles()) || []);
+		var files = globule.find(options.files).concat(options.getFiles());
 		var requires = _getRequiresFromFiles(files);
-		var ignore = options.ignore || [];
 
 		var bowers = utils.componentNames(_workdir);
 
@@ -91,7 +99,7 @@ function browserifyMaybeMultiRequire(browserify, options) {
 		var external_alias = _(options.external).map(function(rawname) {
 			return _getAlias(rawname);
 		});
-		
+
 		_(options).forEach(function(config, action) {
 			if (_(['require']).contains(action)) {
 				var workinglist = _(options.require)
@@ -127,7 +135,7 @@ function browserifyMaybeMultiRequire(browserify, options) {
 
 				///
 				requires.forEach(function(require) {
-					if (_(ignore).contains(require)) return;
+					if (_(options.ignore).contains(require)) return;
 
 					var item = workinglist.find(function(x) { return x.alias === require; });
 					if (item) {
@@ -143,7 +151,7 @@ function browserifyMaybeMultiRequire(browserify, options) {
 			}
 			if (_(['external']).contains(action)) {
 				requires.forEach(function(require) {
-					if (_(ignore).contains(require)) return;
+					if (_(options.ignore).contains(require)) return;
 
 					if (_(external_alias).contains(require)) {
 						tryExternal(browserify, require);
