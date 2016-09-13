@@ -22,6 +22,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "chokidar": "^1.6.0",
     "dot-access": "0.0.4",
     "esprima": "^2.2.0",
     "globule": "^1.0.0",

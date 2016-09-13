@@ -33,6 +33,9 @@ function _getAlias(rawname) {
 	return str[1] || str[0];
 }
 
+var watchAdditional = require('./lib/watch-additional');
+
+
 //////////////////////////////////////////////////////////////////////////////
 
 function browserifyMaybeMultiRequire(browserify, options) {
@@ -53,8 +56,10 @@ function browserifyMaybeMultiRequire(browserify, options) {
 	options.ignore = [].concat(options.ignore).filter(Boolean);
 
 
+	watchAdditional(browserify, options);
+
 	if (!options.noreset) browserify.on('reset', exec);
-	
+
 	function exec() {
 		// NOTE : priority
 		//        weak < require '*' < external '*' < require direct < external direct < strong
