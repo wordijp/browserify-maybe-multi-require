@@ -50,10 +50,10 @@ function browserifyMaybeMultiRequire(browserify, options) {
 
 	browserify._bpack.hasExports = true; // NOTE : need require from other bundle file
 
-	if (!options.noreset) browserify.on('reset', exec);
-	exec();
+	if (!options.noreset) browserify.on('reset', reset);
+	reset();
 
-	function exec() {
+	function reset() {
 		var stream = through.obj(
 			function transform(row, enc, next) {
 				this.push(row);
@@ -75,8 +75,6 @@ function browserifyMaybeMultiRequire(browserify, options) {
 					});
 			});
 		browserify.pipeline.get('record').push(stream);
-
-
 	}
 };
 
@@ -227,9 +225,7 @@ function collectModules(options, cb) {
 					if (_(external_alias).contains(require)) {
 						addExternal(ret_externals, require);
 					} else if (all_external && !_(require_alias).contains(require)) {
-						// TODO : modified. using to isExternalModule
-						var is_module = require.match(/^(\.){0,2}\//) ? false : true;
-						if (is_module) {
+						if (isExternalModule(require)) {
 							addExternal(ret_externals, require);
 						}
 					}
