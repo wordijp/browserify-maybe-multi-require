@@ -1,6 +1,7 @@
 'use strict';
 
 var path = require('path');
+var mdeps = require('module-deps');
 var utils = require('./utils');
 var _  = require('lodash-node');
 var dotAccess = require('dot-access');
@@ -152,92 +153,92 @@ function collectModules(options, cb) {
 	//   browserify.require('linq');
 	//   browserify.external('underscore');
 
-	var ret_requires = {};
-	var ret_externals = {};
+	var full_paths = toFullPaths(globule.find(options.files).concat(options.getFiles()));
 
+	collectRequirePaths(full_paths, function (files) {
+		var ret_requires = {};
+		var ret_externals = {};
 
-	var files = globule.find(options.files).concat(options.getFiles());
-	var requires = _getRequiresFromFiles(files);
+		var requires = _getRequiresFromFiles(files);
+		var bowers = utils.componentNames(_workdir);
 
-	var bowers = utils.componentNames(_workdir);
+		var all_require = _(options.require).contains('*');
+		var all_external = _(options.external).contains('*');
+		var require_alias = _(options.require).map(function(rawname) {
+			return _getAlias(rawname);
+		});
+		var external_alias = _(options.external).map(function(rawname) {
+			return _getAlias(rawname);
+		});
 
+		_(options).forEach(function(config, action) {
+			if (_(['require']).contains(action)) {
+				var workinglist = _(options.require)
+					// require '*' deny by external '*'
+					.filter(function(name) {
+						return (name === '*' && all_external) ? false : true;
+					})
+					// process '*' including
+					.map(function(name) {
+						return (name === '*') ? utils.componentNames(_workdir) : name;
+					})
+					.flatten()
+					// filter out external names
+					.filter(function(name) {
+						return !_(external_alias).contains(_getAlias(name));
+					})
+					.uniq(function(rawname) { return _getAlias(rawname); })
+					// prepare the working list
+					.map(function(rawname) {
+						var name_or_path = rawname.split(':')[0],
+							alias = _getAlias(rawname);
+						var rootname = name_or_path.split('/')[0];
+						var bower_found = _(bowers).contains(rootname);
+						var file_found = bower_found ? false : fs.existsSync(path.join(_workdir, name_or_path));
+						return {
+							name:  name_or_path,
+							alias: alias,
+							path: bower_found ? utils.resolve(name_or_path, _workdir)
+								: file_found ? path.join(_workdir, name_or_path)
+								: undefined
+						};
+					})
 
-	var all_require = _(options.require).contains('*');
-	var all_external = _(options.external).contains('*');
-	var require_alias = _(options.require).map(function(rawname) {
-		return _getAlias(rawname);
-	});
-	var external_alias = _(options.external).map(function(rawname) {
-		return _getAlias(rawname);
-	});
+				///
+				requires.forEach(function(require) {
+					if (_(options.ignore).contains(require)) return;
 
-	_(options).forEach(function(config, action) {
-		if (_(['require']).contains(action)) {
-			var workinglist = _(options.require)
-				// require '*' deny by external '*'
-				.filter(function(name) {
-					return (name === '*' && all_external) ? false : true;
-				})
-				// process '*' including
-				.map(function(name) {
-					return (name === '*') ? utils.componentNames(_workdir) : name;
-				})
-				.flatten()
-				// filter out external names
-				.filter(function(name) {
-					return !_(external_alias).contains(_getAlias(name));
-				})
-				.uniq(function(rawname) { return _getAlias(rawname); })
-				// prepare the working list
-				.map(function(rawname) {
-					var name_or_path = rawname.split(':')[0],
-						alias = _getAlias(rawname);
-					var rootname = name_or_path.split('/')[0];
-					var bower_found = _(bowers).contains(rootname);
-					var file_found = bower_found ? false : fs.existsSync(path.join(_workdir, name_or_path));
-					return {
-						name:  name_or_path,
-						alias: alias,
-						path: bower_found ? utils.resolve(name_or_path, _workdir)
-							: file_found ? path.join(_workdir, name_or_path)
-							: undefined
-					};
-				})
-
-			///
-			requires.forEach(function(require) {
-				if (_(options.ignore).contains(require)) return;
-
-				var item = workinglist.find(function(x) { return x.alias === require; });
-				if (item) {
-					if (item.path) addRequire(ret_requires, item.path, item.alias);
-					else           addRequire(ret_requires, item.name, item.alias);
-				} else if (all_require && !all_external && !_(external_alias).contains(require)) {
-					var is_module = require.match(/^(\.){0,2}\//) ? false : true;
-					if (is_module) {
-						addRequire(ret_requires, require);
+					var item = workinglist.find(function(x) { return x.alias === require; });
+					if (item) {
+						if (item.path) addRequire(ret_requires, item.path, item.alias);
+						else           addRequire(ret_requires, item.name, item.alias);
+					} else if (all_require && !all_external && !_(external_alias).contains(require)) {
+						var is_module = require.match(/^(\.){0,2}\//) ? false : true;
+						if (is_module) {
+							addRequire(ret_requires, require);
+						}
 					}
-				}
-			});
-		}
-		if (_(['external']).contains(action)) {
-			requires.forEach(function(require) {
-				if (_(options.ignore).contains(require)) return;
+				});
+			}
+			if (_(['external']).contains(action)) {
+				requires.forEach(function(require) {
+					if (_(options.ignore).contains(require)) return;
 
-				if (_(external_alias).contains(require)) {
-					addExternal(ret_externals, require);
-				} else if (all_external && !_(require_alias).contains(require)) {
-					// TODO : modified. using to isExternalModule
-					var is_module = require.match(/^(\.){0,2}\//) ? false : true;
-					if (is_module) {
+					if (_(external_alias).contains(require)) {
 						addExternal(ret_externals, require);
+					} else if (all_external && !_(require_alias).contains(require)) {
+						// TODO : modified. using to isExternalModule
+						var is_module = require.match(/^(\.){0,2}\//) ? false : true;
+						if (is_module) {
+							addExternal(ret_externals, require);
+						}
 					}
-				}
-			});
-		}
-	});
+				});
+			}
+		});
 
-	cb(ret_requires, ret_externals);
+		cb(ret_requires, ret_externals);
+	});
 }
 
 function addRequire(rrequires, file, expose) {
@@ -275,3 +276,42 @@ function isExternalModule (file) {
     return !regexp.test(file);
 }
 
+
+// TODO : move lib file
+function collectRequirePaths(paths, cb) {
+	var deps_full_paths = [];
+	var deps = mdeps();
+	deps.on('file', function (file, id) {
+		deps_full_paths.push(file);
+	});
+	deps.on('transform', (tr, mfile) => {
+		tr.on('file', (dep) => {
+			deps_full_paths.push(mfile);
+		});
+	});
+	deps.on('end', function () {
+		cb(deps_full_paths);
+	});
+	deps.on('data', function () {
+		// no-op NOTE : need for emit 'end' event
+	});
+
+	globule.find(paths)
+		// unnecessary
+//		// to unify the difference of path, and to full path
+//		// windows) globule.find path : 'C:/path/to/foo.js' or 'path/to/foo.js'
+//		//          path.resolve path : 'C:\\path\\to\\foo.js'
+//		.map(function (_path) {
+//			return path.resolve(_path);
+//		})
+		.forEach(function (full_path) {
+			deps.write(full_path);
+		});
+	deps.end();
+}
+
+function toFullPaths(paths) {
+	return paths.map(function (_path) {
+		return path.resolve(_path);
+	});
+}
