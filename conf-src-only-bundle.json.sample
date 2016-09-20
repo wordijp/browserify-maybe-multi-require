@@ -1,6 +1,6 @@
 {
 	"files": [
-		"src/**/*.js"
+		"src/app.js"
 	],
     "external": "*"
 }
