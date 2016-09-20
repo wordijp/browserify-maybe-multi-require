@@ -39,24 +39,9 @@ var watchAdditional = require('./lib/watch-additional');
 //////////////////////////////////////////////////////////////////////////////
 
 function browserifyMaybeMultiRequire(browserify, options) {
-	if (options.workdir) _workdir = workdir;
-	if (options.conf) {
-		var confjson = require(path.join(_workdir, options.conf));
-		options = options.confnode && dotAccess.get(confjson, options.confnode) || confjson;
-	}
+	options = adjustOptions(options);
 
-	// to array
-	options.files = [].concat(options.files).filter(Boolean);
-	var _getFiles = options.getFiles || function() { return [] };
-	options.getFiles = function() {
-		return [].concat(_getFiles()).filter(Boolean);
-	};
-	options.require = [].concat(options.require).filter(Boolean);
-	options.external = [].concat(options.external).filter(Boolean);
-	options.ignore = [].concat(options.ignore).filter(Boolean);
-
-
-	watchAdditional(browserify, options);
+	browserify.plugin(watchAdditional, options);
 
 	if (!options.noreset) browserify.on('reset', exec);
 
@@ -172,6 +157,29 @@ function browserifyMaybeMultiRequire(browserify, options) {
 	}
 	exec();
 };
+
+function adjustOptions(_options) {
+	var options = _.clone(_options);
+
+	if (options.workdir) _workdir = workdir;
+	if (options.conf) {
+		var confjson = require(path.join(_workdir, options.conf));
+		options = options.confnode && dotAccess.get(confjson, options.confnode) || confjson;
+	}
+
+	// to array
+	options.files = [].concat(options.files).filter(Boolean);
+	var _getFiles = options.getFiles || function() { return [] };
+	options.getFiles = function() {
+		return [].concat(_getFiles()).filter(Boolean);
+	};
+	options.require = [].concat(options.require).filter(Boolean);
+	options.external = [].concat(options.external).filter(Boolean);
+	options.ignore = [].concat(options.ignore).filter(Boolean);
+	
+	return options;
+}
+
 
 var cache_requires = {};
 function tryRequire(b, file, opts) {
