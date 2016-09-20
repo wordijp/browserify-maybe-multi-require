@@ -9,7 +9,7 @@ g.workdir = process.cwd();
 module.exports = main;
 module.exports.workdir = function(workdir) {
 	g.workdir = workdir || g.workdir;
-	return workdir && browserifyMaybeMultiRequire || g.workdir;
+	return workdir && main || g.workdir;
 };
 
 var watchAdditional = require('./lib/watch-additional');
