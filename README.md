@@ -20,10 +20,14 @@ In your task runner like gulp, add this plugin to browserify:
 
 ```
 b.plugin('browserify-maybe-multi-require', {
+	// files:  [], // not set is default. (equal files: browserify entries)
+	// or
 	files:  ['xxx.js'],
-    require: ['*', './my_modules/mycomp1.js:mycomp1', 'comp2', 'base62/lib/base62'],
-    external: ['comp3', 'comp4'],
-	ignore: ['comp5']
+
+	require: ['*', './my_modules/mycomp1.js:mycomp1', 'comp2', 'base62/lib/base62'],
+	external: ['comp3', 'comp4'],
+	ignore: ['comp5'],
+	// noreset: true, // disable run again when browserify 'reset' event
 });
 ```
 
@@ -63,12 +67,15 @@ In command line, pls use parameter `--workdir thedir`.
 
 ```
 b.plugin('browserify-maybe-multi-require', {
-	files: ['xxx.js'],
-    //       ['name', 'path:alias', 'submodule:alias'],
+	// files:  [], // not set is default. (equal files: browserify entries)
+	// or
+	files:  ['xxx.js'],
+	//       ['name', 'path:alias', 'submodule:alias'],
+
 	require: ['*', './my_modules/mycomp1.js:mycomp1', 'base62/lib/base62:libbase62'],
-    external: ['comp3', 'comp4'],
+	external: ['comp3', 'comp4'],
 	ignore: ['comp5'],
-    // noreset: true, // disable run again when browserify 'reset' event
+	// noreset: true, // disable run again when browserify 'reset' event
 });
 ```
 
@@ -78,17 +85,17 @@ _Notes: `name_or_path` format: `name_or_path[:alias]`, and name_or_path can be c
 
 #### _Additional Rules:_
 - if both require/external and alias declared an alias for a component, using alias in the order priority, weak < require `*` < external `*` < require `comp1` < external `comp1` < strong
-	
+
 	for example
 ```
 options = {
-    require: ['comp1'],
-    external: ['*']
+	require: ['comp1'],
+	external: ['*']
 };
 ...
 ```
 	require component is `comp1` and external components is other all, in this case.
-	
+
 
 # run test
 
