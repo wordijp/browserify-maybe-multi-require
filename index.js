@@ -20,7 +20,8 @@ var maybeMultiRequire = require('./lib/maybe-multi-require');
 
 function main(browserify, options) {
 	options = adjustOptions(options);
-	
+	options = defaultOptions(browserify, options);
+
 	return browserify
 		.plugin(watchAdditional, options)
 		.plugin(maybeMultiRequire, options);
@@ -44,6 +45,17 @@ function adjustOptions(_options) {
 	options.require = [].concat(options.require).filter(Boolean);
 	options.external = [].concat(options.external).filter(Boolean);
 	options.ignore = [].concat(options.ignore).filter(Boolean);
+
+	return options;
+}
+
+function defaultOptions(browserify, _options) {
+	var options = _.clone(_options);
+
+	// default files
+	if (options.files.length === 0 && options.getFiles().length === 0) {
+		options.files = browserify._options.entries;
+	}
 
 	return options;
 }
