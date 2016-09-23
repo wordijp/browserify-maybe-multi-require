@@ -6,6 +6,7 @@ browserify-maybe-multi-require
 Let `browserify-maybe-multi-require` plugin require bower and non package components for you when building bundles, then you can `require` them as normal node modules in application codes.  
 You can also provide external config, to guide `browserify-maybe-multi-require` to external some bower and non package components, which is useful when when building multiple bundles.
 
+> p.s. bower and non package components is optional, if want to use [`bower`](https://github.com/bower/bower), install it.
 
 # install
 
@@ -55,7 +56,7 @@ $ browserify entry.js -d -p [browserify-maybe-multi-require --conf conf.json --c
 ```
 
 ### workdir
-By default, `browserify-maybe-multi-require` will try to find the working bower components dir from the dir of `process.cwd()`. But you can specify another one.
+By default, `browserify-maybe-multi-require` will try to find the working bower components dir when using it, from the dir of `process.cwd()`. But you can specify another one.
 
 In programmatic API, pls use like `b.plugin(browserifyMaybeMultiRequire.workdir(thedir), {..})`.
 In command line, pls use parameter `--workdir thedir`.
@@ -99,7 +100,7 @@ options = {
 
 # run test
 
-_You need ensure related node modules (for `browserify-bower`) and bower components (for test codes) installed, then run `npm test`._
+_You optional ensure related node modules (for `bower`)  components (for test codes) installed, then run `npm test`._
 
 For first time, you can do it like this:
 
