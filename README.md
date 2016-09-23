@@ -1,17 +1,17 @@
-browserify-maybe-multi-require
+flexi-require
 ================
 
-[![NPM](https://nodei.co/npm/browserify-maybe-multi-require.png)](https://nodei.co/npm/browserify-maybe-multi-require/)
+[![NPM](https://nodei.co/npm/flexi-require.png)](https://nodei.co/npm/flexi-require/)
 
-Let `browserify-maybe-multi-require` plugin require bower and non package components for you when building bundles, then you can `require` them as normal node modules in application codes.  
-You can also provide external config, to guide `browserify-maybe-multi-require` to external some bower and non package components, which is useful when when building multiple bundles.
+Let `flexi-require` plugin require bower and non package components for you when building bundles, then you can `require` them as normal node modules in application codes.  
+You can also provide external config, to guide `flexi-require` to external some bower and non package components, which is useful when when building multiple bundles.
 
 > p.s. bower and non package components is optional, if want to use [`bower`](https://github.com/bower/bower), install it.
 
 # install
 
 ```
-npm install browserify-maybe-multi-require
+npm install flexi-require
 ```
 
 # usage
@@ -20,7 +20,7 @@ npm install browserify-maybe-multi-require
 In your task runner like gulp, add this plugin to browserify:
 
 ```
-b.plugin('browserify-maybe-multi-require', {
+b.plugin('flexi-require', {
 	// files:  [], // not set is default. (equal files: browserify entries)
 	// or
 	files:  ['xxx.js'],
@@ -46,19 +46,19 @@ var comp2 = require('comp2');
 Use conf file,
 
 ```shell
-$ browserify entry.js -d -p [browserify-maybe-multi-require --conf conf.json] > bundle.js
+$ browserify entry.js -d -p [flexi-require --conf conf.json] > bundle.js
 ```
 
 Use a node of the conf json,
 
 ```shell
-$ browserify entry.js -d -p [browserify-maybe-multi-require --conf conf.json --confnode aa.bbb] > bundle.js
+$ browserify entry.js -d -p [flexi-require --conf conf.json --confnode aa.bbb] > bundle.js
 ```
 
 ### workdir
-By default, `browserify-maybe-multi-require` will try to find the working bower components dir when using it, from the dir of `process.cwd()`. But you can specify another one.
+By default, `flexi-require` will try to find the working bower components dir when using it, from the dir of `process.cwd()`. But you can specify another one.
 
-In programmatic API, pls use like `b.plugin(browserifyMaybeMultiRequire.workdir(thedir), {..})`.
+In programmatic API, pls use like `b.plugin(flexiRequire.workdir(thedir), {..})`.
 In command line, pls use parameter `--workdir thedir`.
 
 
@@ -67,7 +67,7 @@ In command line, pls use parameter `--workdir thedir`.
 # options
 
 ```
-b.plugin('browserify-maybe-multi-require', {
+b.plugin('flexi-require', {
 	// files:  [], // not set is default. (equal files: browserify entries)
 	// or
 	files:  ['xxx.js'],
@@ -80,7 +80,7 @@ b.plugin('browserify-maybe-multi-require', {
 });
 ```
 
-**action:** _string_, guide `browserify-maybe-multi-require` to **require**/**external** specified bower and non package components in **files**(**ignore** used to ignore in already configured component)  ; available values: `files` | `require` | `external` | `ignore`.
+**action:** _string_, guide `flexi-require` to **require**/**external** specified bower and non package components in **files**(**ignore** used to ignore in already configured component)  ; available values: `files` | `require` | `external` | `ignore`.
 
 _Notes: `name_or_path` format: `name_or_path[:alias]`, and name_or_path can be component name, submodule like 'base62/lib/base62' or file path._
 
@@ -105,10 +105,10 @@ _You optional ensure related node modules (for `bower`)  components (for test co
 For first time, you can do it like this:
 
 ```sh
-browserify-maybe-multi-require $ npm install
-browserify-maybe-multi-require $ npm test
+flexi-require $ npm install
+flexi-require $ npm test
 
-	> browserify-maybe-multi-require@0.0.1 test ~/repos/browserify-maybe-multi-require
+	> flexi-require@0.0.1 test ~/repos/flexi-require
 	> mocha --reporter nyan
 
 	 1   -__,------,
@@ -118,7 +118,7 @@ browserify-maybe-multi-require $ npm test
 
 	  1 passing (139ms)
 
-browserify-maybe-multi-require $
+flexi-require $
 ```
 
 # license

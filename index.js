@@ -13,7 +13,7 @@ module.exports.workdir = function(workdir) {
 };
 
 var watchAdditional = require('./lib/watch-additional');
-var maybeMultiRequire = require('./lib/maybe-multi-require');
+var flexiRequire = require('./lib/flexi-require');
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ function main(browserify, options) {
 
 	return browserify
 		.plugin(watchAdditional, options)
-		.plugin(maybeMultiRequire, options);
+		.plugin(flexiRequire, options);
 }
 
 function adjustOptions(_options) {
