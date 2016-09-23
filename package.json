@@ -32,15 +32,15 @@
     "through2": "^2.0.1"
   },
   "devDependencies": {
-    "browserify": "^10.1.0",
-    "chai": "^2.3.0",
-    "mocha": "^2.2.4"
+    "browserify": "^13.1.0",
+    "chai": "^3.5.0",
+    "mocha": "^3.0.2"
   },
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --reporter nyan"
+    "test": "node_modules/.bin/mocha --reporter nyan"
   },
   "bugs": {
     "url": "https://github.com/wordijp/flexi-require/issues"
