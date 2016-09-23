@@ -1,11 +1,11 @@
 {
-  "name": "browserify-maybe-multi-require",
-  "version": "1.1.4",
+  "name": "flexi-require",
+  "version": "1.1.5",
   "description": "a browserify plugin, to enable you require bower components and non package components just like node modules",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wordijp/browserify-maybe-multi-require"
+    "url": "https://github.com/wordijp/flexi-require"
   },
   "keywords": [
     "bower",
@@ -14,7 +14,7 @@
     "browserify",
     "browserify-plugin",
     "plugin",
-    "browserify-maybe-multi-require"
+    "flexi-require"
   ],
   "author": {
     "name": "wordijp",
@@ -32,18 +32,18 @@
     "through2": "^2.0.1"
   },
   "devDependencies": {
-    "browserify": "^10.1.0",
-    "chai": "^2.3.0",
-    "mocha": "^2.2.4"
+    "browserify": "^13.1.0",
+    "chai": "^3.5.0",
+    "mocha": "^3.0.2"
   },
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --reporter nyan"
+    "test": "node_modules/.bin/mocha --reporter nyan"
   },
   "bugs": {
-    "url": "https://github.com/wordijp/browserify-maybe-multi-require/issues"
+    "url": "https://github.com/wordijp/flexi-require/issues"
   },
-  "homepage": "https://github.com/wordijp/browserify-maybe-multi-require"
+  "homepage": "https://github.com/wordijp/flexi-require"
 }
