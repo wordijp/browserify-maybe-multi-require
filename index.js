@@ -54,7 +54,13 @@ function defaultOptions(browserify, _options) {
 
 	// default files
 	if (options.files.length === 0 && options.getFiles().length === 0) {
-		options.files = browserify._options.entries;
+		options.getFiles = function () {
+			return _.map(browserify._recorded,
+				function (record) {
+					return record.entry === true && record.file;
+				})
+				.filter(Boolean);
+		};
 	}
 
 	return options;
