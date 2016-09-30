@@ -1,6 +1,7 @@
 'use strict';
 
 var _  = require('lodash-node');
+var dotAccess = require('dot-access');
 var path = require('path');
 
 var g = require('./lib/internal/global');
