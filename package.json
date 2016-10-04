@@ -30,6 +30,7 @@
     "lodash-node": "^2.4.1",
     "module-deps": "^4.0.7",
     "ordered-ast-traverse": "^1.1.1",
+    "resolve": "^1.1.7",
     "through2": "^2.0.1",
     "xtend": "^4.0.1"
   },
